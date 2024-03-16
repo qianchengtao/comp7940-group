@@ -5,3 +5,4 @@ openai==1.14.1
 python-telegram-bot==13.7
 redis==5.0.1
 requests==2.31.0
+firebase_admin
