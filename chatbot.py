@@ -3,6 +3,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, Call
 from Perplexity import Perplexity
 import configparser
 import logging
+from Firebase import firebase
 
 def main():
     # Load your token and create an Updater for your Bot
@@ -18,6 +19,9 @@ def main():
     # register a dispatcher to handle message: here we register an echo dispatcher
     # echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
     # dispatcher.add_handler(echo_handler)
+
+    global firebase
+    firebase = firebase()
 
     # dispatcher for perplexity
     global perplexity
@@ -47,6 +51,10 @@ def equiped_perplexity(update, context):
     logging.info("Update: " + str(update))
     logging.info("context: " + str(context))
     context.bot.send_message(chat_id = update.effective_chat.id, text = reply_message)
+
+    global firebase
+    record = {'question': update.message.text, 'answer': reply_message}
+    firebase.submit_data(record)
 
 if __name__ == '__main__':
     main()
