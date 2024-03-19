@@ -15,3 +15,13 @@ class firebase():
             db_ref.child("comp7940_group").child('record' + str(data_count)).set(record)
         else:
             db_ref.child("comp7940_group").child('record' + str(data_count)).set(record)
+
+    def get_data(self, username):
+        user = []
+        db_ref = db.reference('/')
+        data = db_ref.child('user').child(username).get()
+        if data:
+            for key in data.keys():
+                value = data[key]
+                user.append(value)
+        return user

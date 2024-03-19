@@ -4,6 +4,7 @@ from Perplexity import Perplexity
 import configparser
 import logging
 from Firebase import firebase
+import requests
 
 def main():
     def start(update, context):
@@ -33,6 +34,9 @@ def main():
     perplexity_handler = MessageHandler(Filters.text & (~Filters.command), equiped_perplexity)
     dispatcher.add_handler(perplexity_handler)
 
+
+    dispatcher.add_handler(CommandHandler("send", send))
+
     # To start the bot:
     updater.start_polling()
     updater.idle()
@@ -57,6 +61,30 @@ def equiped_perplexity(update, context):
     context.bot.send_message(chat_id = update.effective_chat.id, text = reply_message)
 
     global firebase
+    record = {'question': update.message.text, 'answer': reply_message}
+    firebase.submit_data(record)
+
+def send(update, context):
+    global firebase
+    message = update.message.text
+    print(message)
+    if 'qct' in message:
+        user_data = firebase.get_data('user1')
+        print(user_data)
+    elif 'clx' in message:
+        user_data = firebase.get_data('user2')
+        print(user_data)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="The user cannot be found！")
+        return
+
+    reply_message = perplexity.submit(message)
+
+    bot_token = user_data[1]
+    bot_chatID = str(user_data[0])
+    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + reply_message
+    response = requests.get(send_text)
+
     record = {'question': update.message.text, 'answer': reply_message}
     firebase.submit_data(record)
 
