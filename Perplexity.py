@@ -1,18 +1,19 @@
-import configparser
+#import configparser
 import requests
+import os
 from openai import OpenAI
 
 class Perplexity():
-    def __init__(self,config_ = './config.ini'):
-        if type(config_) == str:
-            self.config = configparser.ConfigParser()
-            self.config.read(config_)
-        elif type(config_) == configparser.ConfigParser:
-            self.config = config_
+    #def __init__(self,config_ = './config.ini'):
+        #if type(config_) == str:
+           # self.config = configparser.ConfigParser()
+           # self.config.read(config_)
+        #elif type(config_) == configparser.ConfigParser:
+            #self.config = config_
 
     def submit(self, message):
         conversation = [{"role": "user", "content": message}]
-        client = OpenAI(api_key = self.config['PERPLEXITY']['API_KEY'], base_url="https://api.perplexity.ai")
+        client = OpenAI(api_key = (os.environ['PERPLEXITY_API_KEY']), base_url="https://api.perplexity.ai")
         response = client.chat.completions.create(model = "mistral-7b-instruct", messages = conversation,)
         return response.choices[0].message.content
 

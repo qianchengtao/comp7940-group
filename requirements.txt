@@ -6,3 +6,4 @@ python-telegram-bot==13.7
 redis==5.0.1
 requests==2.31.0
 firebase_admin
+urllib3==1.26.18

@@ -1,7 +1,8 @@
 from telegram import Update
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, CallbackContext)
 from Perplexity import Perplexity
-import configparser
+#import configparser
+import os
 import logging
 from Firebase import firebase
 import requests
@@ -10,9 +11,9 @@ def main():
     def start(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text="Hello! I'm your bot.")
     # Load your token and create an Updater for your Bot
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    updater = Updater(token = (config['TELEGRAM']['ACCESS_TOKEN']), use_context = True)
+    #config = configparser.ConfigParser()
+    #config.read('config.ini')
+    updater = Updater(token = (os.environ['TELEGRAM_ACCESS_TOKEN']), use_context = True)
     dispatcher = updater.dispatcher
     start_handler = CommandHandler('start', start)
     dispatcher.add_handler(start_handler)
@@ -30,7 +31,7 @@ def main():
 
     # dispatcher for perplexity
     global perplexity
-    perplexity = Perplexity(config)
+    perplexity = Perplexity()
     perplexity_handler = MessageHandler(Filters.text & (~Filters.command), equiped_perplexity)
     dispatcher.add_handler(perplexity_handler)
 
