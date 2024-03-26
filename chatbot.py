@@ -85,6 +85,7 @@ def send(update, context):
     send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + reply_message
     response = requests.get(send_text)
 
+    context.bot.send_message(chat_id=update.effective_chat.id, text="The message has been sent to "+user_data[2])
     record = {'question': update.message.text, 'answer': reply_message}
     firebase.submit_data(record)
 
